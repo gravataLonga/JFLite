@@ -2,12 +2,7 @@
   
 
 ## Who to use?
-  
-
-
 ## Methods
-  
-
 ## Propriedades
   
 
