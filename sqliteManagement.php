@@ -11,7 +11,7 @@
 
 
 */
-class JFSQLite {
+class JFLite {
 	
 	var $conn;
 	var $debug=FALSE;
