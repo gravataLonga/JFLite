@@ -21,7 +21,7 @@ class JFLite {
  		$this->conn= NULL;
  	}
 
-	function JFSQLite(){
+	function JFLite(){
 		$this->__construct();
 	}
 	
