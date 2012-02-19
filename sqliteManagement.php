@@ -2,43 +2,48 @@
 /*
 
 
-	Create by Jonathan Fontes.
-	www.jonathanfontes.com
+	Criado por Jonathan Fontes.
 	2011 / 2012 
 	
-	SQLite Management
-	v.0.1
-	
+	v.0.2
+	Um pequeno script para gerir o sqlite.
+
+
+
 */
-class DB {
+class JFSQLite {
 	
-	protected 	var $conn;
-	public 		var $debug=FALSE;
+	var $conn;
+	var $debug=FALSE;
 
  	function __construct(){
- 		$this->conn = NULL;
+		// Sempre fazer reset a connecção.
+ 		$this->conn= NULL;
  	}
+
+	function JFSQLite(){
+		$this->__construct();
+	}
 	
-	// Abrir ou criar uma nova bases de dados.
-	function open($dbase) {
-		if($this->hasExtension($dbase,'txt') OR $this->hasExtension($dbase,'db') OR $this->hasExtension($dbase,'sqlite')){
+	
+	function open( $dbase ) {
+		if($this->hasExtension($dbase,'txt') OR 
+		   $this->hasExtension($dbase,'db') OR 
+		   $this->hasExtension($dbase,'sqlite'))
+		{
  			$this->conn = @sqlite_open($dbase,0666,$error);
  		}
  		$conn = $this->conn;
  		if( ! is_resource($this->conn) && ( ! file_exists($dbase) )) {
 			unset($this->conn);
 			@unlink(basename($dbase));
+			die($this->alerts(5));
 		}
 		return $conn;
 	}
 	
 	// Execute query
 	function query ( $sql ){
-		// Has connection ?!
-		if( ! $this->has_connection()){
-			// No.
-			return FALSE;
-		}
 		return sqlite_query($this->conn,$sql);
 	}
 	
@@ -61,10 +66,10 @@ class DB {
 	/*
 	* 
 	* @table é o nome da tabela
-	* @options são os campos a serem criados
+	* @options sÃ£o os campos a serem criados
 	* @escapeIfExist, se a tabela existir sai.
 	**/
-	function create_table ($table, $options, $escapeIfExist = TRUE){
+	function create_table ($table, $options, $escape_exists = TRUE){
 		// Options is an array ?!
 		if(!is_array($options)){
 			// No
@@ -72,8 +77,11 @@ class DB {
 		}
 		
 		
-		if($this->table_exists($table) && $escapeIfExist){
-			return $this;
+		if($this->table_exists($table) && $escape_exists){
+			$this->close();
+			die($this->alerts(6));
+		}else if($this->table_exists($table) && $escape_exists === FALSE){
+			$this->drop_table($table);
 		}
 		
 		
@@ -99,11 +107,7 @@ class DB {
 	
 	/*
 	*
-	* Fetch result query.
-	* Type: 0 -> ASSOCITIVE
-	* 		1 -> NUMERIC
-	*		2 -> BOTH (1 AND 2)
-	* 		3 -> UNIQUE ROW
+	* Para retornar os campos pesquisados.
 	*
 	*/
 	
@@ -126,22 +130,12 @@ class DB {
 				return sqlite_fetch_array($resource,SQLITE_ASSOC);
 			break;
 			default:
-				return FALSE;
+				$this->close();
+				die($this->alerts(7));
 			break;
 		}
 	
 	}
-	
-	/*
-		@table is a table name,
-			if not exists return false.
-		
-		@row is fields and values to insert.
-			e.g. array("idNews"=>"1","news"=>"hello world!");
-			
-		return TRUE if success otherwise return false.
-		
-	*/
 	
 	function insert ($table, $row ){
 		if( ! $this->table_exists($table)){
@@ -152,7 +146,6 @@ class DB {
 		$arrValues = array();
 		$query = "INSERT INTO {$table} ";
 		
-		// loop throw array $row
 		foreach ( $row as $field=>$value){
 			$arrFields[] = "'".$field."'";
 			$arrValues[] = "'".$this->quote($value)."'";	
@@ -162,8 +155,6 @@ class DB {
 		$query = $this->query($query);
 		
 		// Last erros!
-		// Only get the erros if
-		// $this->debug equals TRUE
 		$this->lastErro();
 		
 		if( ! $query){
@@ -176,9 +167,7 @@ class DB {
 	
 	/*
 	*
-	* Drop a table,
-	* if a table isn't exists return false.
-	* return true if success otherwise return false.
+	* Apagar uma tabela
 	*
 	*/
 	function drop_table ( $name ){
@@ -195,9 +184,11 @@ class DB {
 		
 	}
 	
-	/*
-		Close connection.
-	*/
+	
+	function quote( $string ){
+		return sqlite_escape_string($string);
+	}
+	
 	function close (){
 		return sqlite_close($this->conn);
 	}
@@ -217,43 +208,34 @@ class DB {
 		return TRUE;
 	}
 	
-	/*
-		Verified if has connection.
-		Return true if success otherwise return false.
-	*/
-	protected function has_connection (){
-		return $this->conn == NULL ? FALSE : TRUE; 
-	}
 	
 	// Has extension ?!
-	// How to use, "teste.png","png" => true
-	//			   "nin.txt","bd" => false	
 	protected function hasExtension ( $filename, $extension ){
 		$ext_tmp = end(explode(".",$filename));
 		return $ext_tmp === $extension ? TRUE : FALSE;
 	}
 	
-	// To protect values.
-	protected function quote( $string ){
-		return sqlite_escape_string($string);
-	}
+
 	
-	// Return the lastest erros.
 	protected function lastErro (){
-		if($this->debug && $this->has_connection() && is_resource($this->conn) && sqlite_last_error($this->conn)!=0){
+		if($this->debug && 
+			$this->conn && 
+			is_resource($this->conn) && 
+			sqlite_last_error($this->conn) !== 0)
+		{
 			echo sqlite_error_string(sqlite_last_error($this->conn));
 		}
 	}
 	
-
+	private function alerts ( $numb ){
+		$arrAlert = array();
+		$arrAlert[5] = "Can't open database or create.";
+		$arrAlert[6] = "Table already exists!";
+		$arrAlert[7] = "Type of fetch undefined.";
+	} 
+	
 	function __destruct(){
 		$this->close();
 	}
-	
-	
-	
 }
 ?>
-
-
-
