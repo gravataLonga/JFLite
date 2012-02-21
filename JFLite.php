@@ -203,6 +203,24 @@ class JFLite {
 		return sqlite_escape_string($string);
 	}
 	
+	// Verified if database exists.
+	// fn_success is a callback in case have database
+	// fn_fail is a callback in casa hasn't a database
+	public function hasDatabase ( $database, $fn_success=NULL, $fn_fail=NULL ){
+		if( ! file_exists($database) ){
+			if( is_callable($fn_fail) && $fn_fail !== NULL)
+			{
+				$fn_fail();
+			}
+			return FALSE;
+		}
+		if( is_callable($fn_success) && $fn_fail !== NULL)
+		{
+			$fn_fail();
+		}
+		return TRUE;
+	}
+	
 	function close (){
 		return sqlite_close($this->conn);
 	}
@@ -213,14 +231,6 @@ class JFLite {
 	*
 	*
 	*/
-	
-	// Verified if database exists.
-	protected function hasDatabase ( $database ){
-		if( ! file_exists($database) ){
-			return FALSE;
-		}
-		return TRUE;
-	}
 	
 	
 	// Has extension ?!
