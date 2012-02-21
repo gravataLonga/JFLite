@@ -13,8 +13,9 @@
 */
 class JFLite {
 	
-	var $conn;
-	var $debug=FALSE;
+	var 		$conn;
+	var 		$debug=FALSE;
+	protected 	$_last_query = "";
 
  	function __construct(){
 		// Sempre fazer reset a connecção.
@@ -44,6 +45,8 @@ class JFLite {
 	
 	// Execute query
 	function query ( $sql ){
+		// cache lastest query.
+		$this->_last_query = $sql;
 		return sqlite_query($this->conn,$sql);
 	}
 	
@@ -163,7 +166,18 @@ class JFLite {
 		return $this;
 	}
 	
+	function insert_id ()
+	{
+		if ( $this->conn == NULL){
+			return FALSE;
+		}
+		return sqlite_last_insert_rowid ( $this->conn );
+	}
 	
+	function last_query ()
+	{
+		return $this->_last_query;
+	}
 	
 	/*
 	*
@@ -172,10 +186,10 @@ class JFLite {
 	*/
 	function drop_table ( $name ){
 		if( ! $this->table_exists($name)){
-			return false;
+			return FALSE;
 		}
 		
-		$query = "drop table if exists {$name};";
+		$query = "drop table {$name};";
 		$query = $this->query($query);
 		if( ! $query ){
 			return FALSE;
