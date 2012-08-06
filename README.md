@@ -12,9 +12,14 @@
 
 ## Methods
 
-    open 
+Method `open` will try to open database if can't, will attemp created. Return connection resource.
 
-Method open will try to open database if can't, will attemp created. Return connection resource.
+    open ( $dbname )
+  
+Method `query` 1 string of argument, and return resource. 
+
+    query ( $sql )
+
 
 
 ## Propriedades
