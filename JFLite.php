@@ -89,21 +89,22 @@ class JFLite {
 		
 		
 		// helper to build a tables
-		$arrField = array();
-		$arrTypes = array();
 		$arrValues = array();
-		$query = "";
 		
+		// Foreach for all fields.
 		foreach ( $options as $field => $types ){
-			$arrField[] = $field;
-			$arrTypes[] = $types;
 			$arrValues[] = "'".$field."' ".$types;
 		}
 		
 		$query = "CREATE TABLE {$table} ( ".implode(",", $arrValues)." );";
+		
+		// Query SQL
 		if($this->query($query)){
+			// Success!
 			return $this;
 		}
+		
+		// Ups, something went wrong!
 		return FALSE;
 		
 	}
@@ -145,12 +146,10 @@ class JFLite {
 			return FALSE;
 		}
 		
-		$arrFields = array();
 		$arrValues = array();
 		$query = "INSERT INTO {$table} ";
 		
 		foreach ( $row as $field=>$value){
-			$arrFields[] = "'".$field."'";
 			$arrValues[] = "'".$this->quote($value)."'";	
 		}
 		
@@ -240,7 +239,7 @@ class JFLite {
 	}
 	
 
-	
+	// Get lastest Errors
 	protected function lastErro (){
 		if($this->debug && 
 			$this->conn && 
@@ -251,6 +250,7 @@ class JFLite {
 		}
 	}
 	
+	// Internals erros!
 	private function alerts ( $numb ){
 		$arrAlert = array();
 		$arrAlert[5] = "Can't open database or create.";
@@ -258,6 +258,7 @@ class JFLite {
 		$arrAlert[7] = "Type of fetch undefined.";
 	} 
 	
+	// When destruct class, close connection if is open! 
 	function __destruct(){
 		$this->close();
 	}
