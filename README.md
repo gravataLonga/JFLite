@@ -2,7 +2,21 @@
   
 
 ## Who to use?
+
+    $lite = new JFLite();
+    
+    $lite->open('myConnection'); // This will create database if not exists.
+    
+    $qry = $lite->query("SELECT * FROM gestbook"); // Query a table
+
+
 ## Methods
+
+    open 
+
+Method open will try to open database if can't, will attemp created. Return connection resource.
+
+
 ## Propriedades
   
 
