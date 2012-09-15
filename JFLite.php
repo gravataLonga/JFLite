@@ -11,6 +11,12 @@
 
 
 */
+
+/**
+* Namespace of class.
+*/
+namespace gravataLonga;
+
 class JFLite {
 	
 	var 		$conn;
