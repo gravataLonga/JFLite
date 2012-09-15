@@ -2,8 +2,10 @@
   
 
 ## Who to use?
-
-    $lite = new JFLite();
+  
+    require "JFLite.php";
+    
+    $lite = new gravataLonga/JFLite();
     
     $lite->open('myConnection'); // This will create database if not exists.
     
