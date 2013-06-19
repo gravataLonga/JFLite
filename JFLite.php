@@ -5,7 +5,7 @@
 	Criado por Jonathan Fontes.
 	2011 / 2012 
 	
-	v.0.2
+	v.0.5
 	Um pequeno script para gerir o sqlite.
 
 
@@ -34,9 +34,9 @@ class JFLite {
 	
 	
 	function open( $dbase ) {
-		if($this->hasExtension($dbase,'txt') OR 
-		   $this->hasExtension($dbase,'db') OR 
-		   $this->hasExtension($dbase,'sqlite'))
+		if($this->has_extension($dbase,'txt') OR 
+		   $this->has_extension($dbase,'db') OR 
+		   $this->has_extension($dbase,'sqlite'))
 		{
  			$this->conn = @sqlite_open($dbase,0666,$error);
  		}
@@ -211,7 +211,7 @@ class JFLite {
 	// Verified if database exists.
 	// fn_success is a callback in case have database
 	// fn_fail is a callback in casa hasn't a database
-	public function hasDatabase ( $database, $fn_success=NULL, $fn_fail=NULL ){
+	public function has_database ( $database, $fn_success=NULL, $fn_fail=NULL ){
 		if( ! file_exists($database) ){
 			if( is_callable($fn_fail) && $fn_fail !== NULL)
 			{
@@ -239,14 +239,14 @@ class JFLite {
 	
 	
 	// Has extension ?!
-	protected function hasExtension ( $filename, $extension ){
+	protected function has_extension ( $filename, $extension ){
 		$ext_tmp = end(explode(".",$filename));
 		return $ext_tmp === $extension ? TRUE : FALSE;
 	}
 	
 
 	// Get lastest Errors
-	protected function lastErro (){
+	protected function last_erro (){
 		if($this->debug && 
 			$this->conn && 
 			is_resource($this->conn) && 
