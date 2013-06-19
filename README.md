@@ -23,6 +23,10 @@ Method `query` 1 string of argument, and return resource.
     query ( $sql )
 
 
+Method `create_table` 3 arguments. Name of Table, Second table field and third set to true to create table if exists
+
+    create_table( $name_of_table, $fields, $exist_if_exist = FALSE )
+
 
 ## Propriedades
   
