@@ -1,5 +1,6 @@
 #SQLite Management
-  
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/gravataLonga/jflite/trend.png)](https://bitdeli.com/free "Bitdeli Badge")   
 
 ## Who to use?
   
