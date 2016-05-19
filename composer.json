@@ -1,0 +1,19 @@
+{
+    "name": "gravatalonga/sqlitemng",
+    "description": "Sqlite Management",
+    "type": "sqlite",
+    "require": {
+        "phpunit/phpunit": "^5.3"
+    },
+    "autoload": {
+        "psr-4": {"Gravatalonga\\sqlitemng": "src/sqlitemng/"}
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan Fontes",
+            "email": "jonathan.alexey16@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}
